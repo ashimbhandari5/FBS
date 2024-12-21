@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  user User[]
+
+  @@map("role")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  phone_number String   @unique @db.VarChar(15)
+  address      String
+  password     String
+  roleId       Int
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
+
+  role    Role      @relation(fields: [roleId], references: [id])
+  futsal  Futsal[]
+  booking Booking[]
+  profile Profile[]
+
+  @@map("user")
+}
+
+model Futsal {
+  id       Int       @id @default(autoincrement())
+  name     String
+  price    String
+  email    String    @unique
+  mobile   String    @unique @db.VarChar(15)
+  location String
+  photo    String
+  size     String
+  ownerId  Int
+  user     User      @relation(fields: [ownerId], references: [id])
+  // booking Booking @relation(fields: [id], references: [id])
+  booking  Booking[]
+
+  @@map("futsal")
+}
+
+model Booking {
+  id           Int       @id @default(autoincrement())
+  userId       Int
+  futsalId     Int
+  booking_date String
+  start_time   Int
+  end_time     Int
+  price        String
+  status       String // booked cancel
+  user         User      @relation(fields: [id], references: [id])
+  futsal       Futsal    @relation(fields: [futsalId], references: [id])
+  // user User @relation(fields: [userId], references: [id])
+  profile      Profile[]
+
+  @@map("booking")
+}
+
+model Profile {
+  id      Int     @id @default(autoincrement())
+  userId  Int
+  address String
+  points  Int
+  user    User    @relation(fields: [userId], references: [id])
+  booking Booking @relation(fields: [points], references: [id])
+
+  @@map("profile")
+}
