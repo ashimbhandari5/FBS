@@ -6,9 +6,11 @@ import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { FutsalModule } from './futsal/futsal.module';
+import { BookingModule } from './booking/booking.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
-  imports: [RoleModule, PrismaModule, UserModule, FutsalModule],
+  imports: [RoleModule, PrismaModule, UserModule, FutsalModule, BookingModule, ProfileModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
