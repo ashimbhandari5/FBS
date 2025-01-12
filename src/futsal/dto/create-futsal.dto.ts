@@ -30,6 +30,10 @@ export class CreateFutsalDto {
   size: string;
 
   @IsNotEmpty()
+  @IsString()
+  description: string;
+
+  @IsNotEmpty()
   @IsInt()
   ownerId: number;
 }
