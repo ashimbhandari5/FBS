@@ -9,8 +9,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Role {
@@ -18,18 +19,20 @@ model Role {
   name String // e.g., admin, owner, player
 
   users User[]
+
+  @@map("role")
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  name       String
-  email      String   @unique
-  mobile     String   @unique @db.VarChar(15)
-  address    String
-  password   String
-  roleId     Int
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  phone_number String   @unique @db.VarChar(15)
+  address      String
+  password     String
+  roleId       Int
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
 
   role    Role      @relation(fields: [roleId], references: [id])
   futsal  Futsal[]
@@ -42,26 +45,29 @@ model User {
 model Profile {
   id         Int      @id @default(autoincrement())
   userId     Int      @unique
-  points     String // ref: booking.id, cancel causes decrease in points
+  points     Int // ref: booking.id, cancel causes decrease in points
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id])
+
+  @@map("profile")
 }
 
 model Futsal {
-  id         Int      @id @default(autoincrement())
-  name       String
-  price      String
-  email      String   @unique
-  mobile     String   @unique @db.VarChar(15)
-  location   String
-  photo      String
-  size       String
-  ownerId    Int
-  status     String // active or not
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  name        String
+  price       String
+  email       String   @unique
+  mobile      String   @unique @db.VarChar(15)
+  location    String
+  photo       String
+  size        String
+  description String
+  ownerId     Int
+  status      String // active or not
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now())
 
   owner    User      @relation(fields: [ownerId], references: [id])
   bookings Booking[]
@@ -83,4 +89,6 @@ model Booking {
 
   user   User   @relation(fields: [userId], references: [id])
   futsal Futsal @relation(fields: [futsalId], references: [id])
+
+  @@map("booking")
 }
