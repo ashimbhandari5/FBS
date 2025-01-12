@@ -5,7 +5,7 @@ import { UpdateFutsalDto } from './dto/update-futsal.dto';
 
 @Injectable()
 export class FutsalService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(createFutsalDto: CreateFutsalDto) {
     return this.prismaService.futsal.create({
@@ -19,7 +19,7 @@ export class FutsalService {
   async findAll() {
     return this.prismaService.futsal.findMany({
       include: {
-        booking: true,
+        bookings: true,
       },
     });
   }
@@ -28,7 +28,7 @@ export class FutsalService {
     const futsal = await this.prismaService.futsal.findUnique({
       where: { id },
       include: {
-        booking: true,
+        bookings: true,
       },
     });
     if (!futsal) {
@@ -59,7 +59,7 @@ export class FutsalService {
     const futsal = await this.prismaService.futsal.findUnique({
       where: { id },
       include: {
-        booking: true,
+        bookings: true,
       },
     });
     if (!futsal) {

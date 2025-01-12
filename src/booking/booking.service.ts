@@ -5,7 +5,7 @@ import { UpdateBookingDto } from './dto/update-booking.dto';
 
 @Injectable()
 export class BookingService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(createBookingDto: CreateBookingDto) {
     return this.prismaService.booking.create({
@@ -13,9 +13,11 @@ export class BookingService {
         booking_date: createBookingDto.booking_date,
         start_time: createBookingDto.start_time,
         end_time: createBookingDto.end_time,
-        price: createBookingDto.price.toString(),
+        price: createBookingDto.price,
         status: createBookingDto.status,
-        userId: createBookingDto.userId,
+        user: {
+          connect: { id: createBookingDto.userId },
+        },
         futsal: {
           connect: { id: createBookingDto.futsalId },
         },
@@ -54,7 +56,7 @@ export class BookingService {
         booking_date: updateBookingDto.booking_date,
         start_time: updateBookingDto.start_time,
         end_time: updateBookingDto.end_time,
-        price: updateBookingDto.price.toString(),
+        price: updateBookingDto.price,
         status: updateBookingDto.status,
         user: updateBookingDto.userId
           ? { connect: { id: updateBookingDto.userId } }

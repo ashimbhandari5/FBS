@@ -36,4 +36,8 @@ export class CreateFutsalDto {
   @IsNotEmpty()
   @IsInt()
   ownerId: number;
+
+  @IsNotEmpty()
+  @IsString()
+  status: string;
 }
