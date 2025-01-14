@@ -1,26 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
+import { PrismaService } from '../prisma/prisma.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { profile } from 'console';
 
 @Injectable()
 export class ProfileService {
-  create(createProfileDto: CreateProfileDto) {
-    return 'This action adds a new profile';
+  constructor(private readonly prismaService: PrismaService) {}
+  async create(createProfileDto: CreateProfileDto) {
+    const { userId, points } = createProfileDto;
+    const profile = await this.prismaService.profile.create({
+      data: { userId, points },
+    });
+    return profile;
   }
 
   findAll() {
-    return `This action returns all profile`;
+    return this.prismaService.profile.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} profile`;
+  async findOne(id: number) {
+    const profile = await this.prismaService.profile.findUnique({
+      where: { id },
+    });
+    if (!profile) {
+      throw new NotFoundException(`Profile #${id} not found`);
+    }
+    return profile;
   }
 
-  update(id: number, updateProfileDto: UpdateProfileDto) {
-    return `This action updates a #${id} profile`;
+  async update(id: number, updateData: Partial<CreateProfileDto>) {
+    const profile = await this.prismaService.profile.update({
+      where: { id },
+      data: updateData,
+    });
+    if (!profile) {
+      throw new NotFoundException(`Profile #${id} not found`);
+    }
+    return profile;
   }
 
   remove(id: number) {
-    return `This action removes a #${id} profile`;
+    try {
+      return this.prismaService.profile.delete({
+        where: { id },
+      });
+    } catch (error) {
+      throw new NotFoundException(`profile with ID ${id} not found`);
+    }
   }
 }
