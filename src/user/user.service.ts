@@ -11,6 +11,7 @@ import { capitalizeFirstLetterOfEachWordInAPhrase } from 'src/helpers/capitalize
 @Injectable()
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
+
   // Create a new user
   async create(createUserDto: CreateUserDto) {
     createUserDto.name = capitalizeFirstLetterOfEachWordInAPhrase(
@@ -23,7 +24,13 @@ export class UserService {
       );
     }
 
-    return this.prismaService.user.create({ data: createUserDto });
+    // Create user with default 100 points
+    return this.prismaService.user.create({
+      data: {
+        ...createUserDto,
+        points: 100, // Initial points allocation
+      },
+    });
   }
 
   // Find all roles
@@ -80,7 +87,7 @@ export class UserService {
     });
 
     if (id) {
-      return user ? user.id === id : true;
+      return user ? user.id !== id : false;
     }
 
     return !!user;

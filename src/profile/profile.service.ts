@@ -8,9 +8,9 @@ import { profile } from 'console';
 export class ProfileService {
   constructor(private readonly prismaService: PrismaService) {}
   async create(createProfileDto: CreateProfileDto) {
-    const { userId, points } = createProfileDto;
+    const { userId } = createProfileDto;
     const profile = await this.prismaService.profile.create({
-      data: { userId, points },
+      data: { userId },
     });
     return profile;
   }
