@@ -31,6 +31,7 @@ model User {
   address      String
   password     String
   roleId       Int
+  points       Int      @default(100)
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now())
 
@@ -45,7 +46,6 @@ model User {
 model Profile {
   id         Int      @id @default(autoincrement())
   userId     Int      @unique
-  points     Int // ref: booking.id, cancel causes decrease in points
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
